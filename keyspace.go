@@ -1,13 +1,21 @@
 package keyspace
 
+import (
+	"errors"
+)
+
 type Keyspace struct{
 	space []byte
 	length int
 	current []int
 }
 
-func (k * Keyspace) Next() []byte {
-	k.incrementString(k.length-1)
+func (k * Keyspace) Next() ([]byte, error) {
+	err := k.incrementString(k.length-1)
+	return k.toBytes(), err
+}
+
+func (k * Keyspace) toBytes() []byte {
 	x := make([]byte, k.length)
 	for idx, value := range k.current {
       x[idx]=k.space[value]
@@ -15,15 +23,22 @@ func (k * Keyspace) Next() []byte {
     return x
 }
 
-func (k * Keyspace) incrementString(offset int) {
+func (k * Keyspace) incrementString(offset int) (err error) {
 	x := k.current
+
+	if(offset == 0 && x[offset] == len(k.space)-1) {
+	  return errors.New("Keyspace: Maximum value reached")
+	}
 	if(x[offset]==len(k.space)-1) {
 		x[offset]=0
-		k.incrementString(offset-1)
+		if err := k.incrementString(offset-1); err != nil {
+			return err
+		}
 	} else {
 		x[offset]++
 	}
 	k.current = x
+	return nil
 }
 
 func New(space []byte, length int) Keyspace {
