@@ -15,6 +15,10 @@ func (k * Keyspace) Next() ([]byte, error) {
 	return k.toBytes(), err
 }
 
+func (k * Keyspace) Length() int {
+	return k.length
+}
+
 func (k * Keyspace) toBytes() []byte {
 	x := make([]byte, k.length)
 	for idx, value := range k.current {
@@ -48,5 +52,6 @@ func New(space []byte, length int) Keyspace {
 
     k.current = make([]int, length)
     for i := range k.current  { k.current[i] = 0 }
+    k.current[length-1]=-1 // otherwise we miss the first value
     return k
 }
