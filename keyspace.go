@@ -15,6 +15,11 @@ func (k * Keyspace) Next() ([]byte, error) {
 	return k.toBytes(), err
 }
 
+func (k * Keyspace) Previous() ([]byte, error) {
+	err := k.decrementString(k.length-1)
+	return k.toBytes(), err
+}
+
 func (k * Keyspace) Length() int {
 	return k.length
 }
@@ -44,6 +49,35 @@ func (k * Keyspace) incrementString(offset int) (err error) {
 	k.current = x
 	return nil
 }
+
+func (k * Keyspace) decrementString(offset int) (err error) {
+	x := k.current
+
+  // if(offset == 0 && x[offset] == len(k.space)-1) {
+  //   return errors.New("Keyspace: Maximum value reached")
+  // }
+  hasPositiveNumber := false
+  for num := range x {
+    if num > 0 {
+      hasPositiveNumber = true
+      break
+    }
+  }
+  if(!hasPositiveNumber) {
+    return errors.New("Keyspace: Minimum value reached")
+  }
+	if(x[offset]==0) {
+		x[offset]=len(k.space)-1
+		if err := k.decrementString(offset-1); err != nil {
+			return err
+		}
+	} else {
+		x[offset]--
+	}
+	k.current = x
+	return nil
+}
+
 
 func New(space []byte, length int) Keyspace {
 	var k Keyspace
