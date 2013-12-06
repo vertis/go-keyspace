@@ -10,11 +10,15 @@ type Keyspace struct{
 	current []int
 }
 
+// Should increment to the next entry in the keyspace, and return that entry.
+// Will return an error when the keyspace is exhausted
 func (k * Keyspace) Next() ([]byte, error) {
 	err := k.incrementString(k.length-1)
 	return k.toBytes(), err
 }
 
+// Should decrement to the previous entry in the keyspace, and return that entry.
+// Will return an error when the keyspace is exhausted
 func (k * Keyspace) Previous() ([]byte, error) {
 	err := k.decrementString(k.length-1)
 	return k.toBytes(), err
