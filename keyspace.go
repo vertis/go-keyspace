@@ -24,10 +24,12 @@ func (k * Keyspace) Previous() ([]byte, error) {
 	return k.toBytes(), err
 }
 
+// Returns the length in characters of the keyspace
 func (k * Keyspace) Length() int {
 	return k.length
 }
 
+// This function translates the keyspace to the appropriate character for the byte array
 func (k * Keyspace) toBytes() []byte {
 	x := make([]byte, k.length)
 	for idx, value := range k.current {
@@ -36,6 +38,8 @@ func (k * Keyspace) toBytes() []byte {
     return x
 }
 
+// This function increments the keyspace but doesn't return the value
+// Will return an error when the keyspace is exhausted
 func (k * Keyspace) incrementString(offset int) (err error) {
 	x := k.current
 
@@ -54,6 +58,8 @@ func (k * Keyspace) incrementString(offset int) (err error) {
 	return nil
 }
 
+// This function decrements the keyspace but doesn't return the value
+// Will return an error when the keyspace is exhausted
 func (k * Keyspace) decrementString(offset int) (err error) {
 	x := k.current
 
@@ -82,7 +88,9 @@ func (k * Keyspace) decrementString(offset int) (err error) {
 	return nil
 }
 
-
+// Initialises the keyspace.
+// Requires a byte array that should be made up of the desired character set
+// Requires the length of the keyspace (does not support growing past this length)
 func New(space []byte, length int) Keyspace {
 	var k Keyspace
     k.space = space
