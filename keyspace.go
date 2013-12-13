@@ -62,10 +62,7 @@ func (k * Keyspace) incrementString(offset int) (err error) {
 // Will return an error when the keyspace is exhausted
 func (k * Keyspace) decrementString(offset int) (err error) {
 	x := k.current
-
-  // if(offset == 0 && x[offset] == len(k.space)-1) {
-  //   return errors.New("Keyspace: Maximum value reached")
-  // }
+  
   hasPositiveNumber := false
   for num := range x {
     if num > 0 {
